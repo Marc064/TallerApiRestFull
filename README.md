@@ -5,7 +5,8 @@
 Marco Antonio Vargas Garcia y Dilan Ferney Galeano Hoyos
 
 ## Instalar dependecias
-´´´bash
+
+```bash
 npm install
-´´´
+```
  
