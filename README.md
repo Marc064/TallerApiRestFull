@@ -9,4 +9,10 @@ Marco Antonio Vargas Garcia y Dilan Ferney Galeano Hoyos
 ```bash
 npm install
 ```
+
+## Ejecutar servidor
+
+```bash
+npm start
+```
  
