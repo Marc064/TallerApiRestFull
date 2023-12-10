@@ -1,4 +1,5 @@
 const Member = require('../models/model-member')
+const Band = require('./../models/model-band')
 
 module.exports={
     findAll:async(req, res)=>{
@@ -30,15 +31,61 @@ module.exports={
         }
     },
 
-    save:async(req, res)=>{
-
+    save: async (req, res) => {
+        const { id } = req.params;
+    
+        try {
+            const band = await Band.findById(id)
+    
+            if (band) {
+                try {
+                    const member = new Member(req.body)
+                    member.band = band
+                    const result = await member.save()
+                    band.members.push(member)
+                    await band.save()
+                    return res.status(200).json({ "status": true, "data": result })
+                } catch (error) {
+                    return res.status(500).json({ "status": false, "error": error })
+                }
+            } else {
+                return res.status(404).json({ "status": false, "error": "La Banda No Existe" })
+            }
+        } catch (error) {
+            return res.status(500).json({ "status": false, "error": "El id esta incompleto" })
+        }
     },
 
     update:async(req, res)=>{
-
+        const { id } = req.params
+        try{
+            const data = await Member.findByIdAndUpdate(id, req.body, {new:true})
+            return res.status(200).json({ "state": true, "data": data })
+        }catch(error){
+            return res.status(500).json({"state":false,"error":error})
+        }
     },
 
-    remove:async(req, res)=>{
-        
+    remove: async (req, res) => {
+        const { id } = req.params
+        try {
+            const member = await Member.findById(id)
+            if (member) {
+                const bandId = member.band
+                const data = await Member.findByIdAndDelete(id)
+                if (data) {
+                    const band = await Band.findById(bandId)
+                    band.members.pull(id)
+                    await band.save()
+                    return res.status(200).json({ "status": true, "data": data })
+                } else {
+                    return res.status(404).json({ "status": false, "error": "Miembro no encontrado" })
+                }
+            } else {
+                return res.status(404).json({ "status": false, "error": "Miembro no encontrado" })
+            }
+        } catch (error) {
+            return res.status(500).json({ "status": false, "error": error.message })
+        }
     }
-}
+}    
