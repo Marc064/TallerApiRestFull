@@ -28,6 +28,8 @@ const SchemaMember = new Schema({
         type:mongoose.Types.ObjectId,
         ref:'band'
     }
+},{
+    versionKey: false
 })
 
 module.exports = mongoose.model('member', SchemaMember)

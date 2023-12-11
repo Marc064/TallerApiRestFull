@@ -24,6 +24,8 @@ const SchemaBand = new Schema ({
         type:mongoose.Types.ObjectId,
         ref:'member'
     }]
+},{
+    versionKey: false
 })
 
 
