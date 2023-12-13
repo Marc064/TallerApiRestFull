@@ -42,10 +42,12 @@ module.exports={
                     const member = new Member(req.body)
                     member.band = band
                     const result = await member.save()
-                    band.members.push(member)
-                    await band.save()
+                    bandObject = band.toObject()
+                    bandObject.members.push(member)
+                    await band.updateOne(bandObject)
                     return res.status(200).json({ "status": true, "data": result })
                 } catch (error) {
+                    console.log(error)
                     return res.status(500).json({ "status": false, "error": error })
                 }
             } else {
@@ -59,7 +61,7 @@ module.exports={
     update:async(req, res)=>{
         const { id } = req.params
         try{
-            const data = await Member.findByIdAndUpdate(id, req.body, {new:true})
+            const data = await Member.findByIdAndUpdate(id, req.body)
             return res.status(200).json({ "state": true, "data": data })
         }catch(error){
             return res.status(500).json({"state":false,"error":error})
@@ -85,7 +87,7 @@ module.exports={
                 return res.status(404).json({ "status": false, "error": "Miembro no encontrado" })
             }
         } catch (error) {
-            return res.status(500).json({ "status": false, "error": error.message })
+            return res.status(500).json({ "status": false, "error": error })
         }
     }
 }    

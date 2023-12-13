@@ -1,4 +1,5 @@
 const Band = require('../models/model-band')
+const Member = require('../models/model-member')
 
 module.exports = {
     findAll: async (req, res) => {
@@ -46,7 +47,7 @@ module.exports = {
     update: async (req, res) => {
         const { id } = req.params
         try {
-            const data = await Band.findByIdAndUpdate(id, req.body, {new:true})
+            const data = await Band.findByIdAndUpdate(id, req.body)
             return res.status(200).json({ "state": true, "data": data })
         } catch (error) {
             return res.status(500).json({ "state": false, "error": error })
@@ -56,8 +57,9 @@ module.exports = {
     remove: async (req, res) => {
         const { id } = req.params
         try {
-            const data = await Band.findByIdAndDelete(id, req.body, { new: true })
-            return res.status(200).json({ "state":true,"data": data })
+            const data = await Band.findByIdAndDelete(id, req.body)
+            await Member.deleteMany({ band: id });
+            return res.status(200).json({ "state":true,"data": data})
         } catch (error) {
             return res.status(500).json({ "state": false, "error": error })
         }
